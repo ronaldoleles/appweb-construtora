@@ -1,0 +1,16 @@
+<h2>Selecione uma Obra:</h2>
+{{#each obras}}
+<div class="card mt-4">
+  <div class="card-body">
+    <h4>{{nomeObra}}</h4>
+    <small>Proprietario: {{nomeProprietario}}</small>
+    <br>
+    <small>Telefone: {{telefoneProprietario}}</small>
+    <br>
+    <small>Data de início: {{data}}</small>
+    <br><br>
+    <a href="/admin/diarias/add/{{_id}}"><button class="btn btn-success">Selecionar</button> </a>
+  </div>
+</div>
+{{else}}
+{{/each}}
