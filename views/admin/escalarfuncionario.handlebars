@@ -1,21 +1,29 @@
 <h4>Obra Selecionada: {{obras.nomeObra}}</h4>
+<input type="hidden" value="{{obras.nomeObra}}" name="nomeObraEscalada">
 <div class="card">
   <div class="card-body">
     <form action="/admin/postagens/escalar/funcionario" method="POST">
+      <h6>Lista de Funcionários Escalados:</h6>
+      {{#each escalacoes}}
+      {{categoria.nome}}
+      <br>
+      {{else}}
+      {{/each}}
 
+      <br>
       <h6>Escale o Funcionário: </h6>
+
       <select name="categoria" class="custom-select">
         {{#each categorias}}
-
         <option value="{{_id}}">{{nome}}</option>
 
         {{else}}
-        <option value="">Nenhum funcionario cadastrado</option>
+        <option value="0">Nenhum funcionario cadastrado</option>
         {{/each}}
-
       </select>
-      <input type="hidden" value="{{obras._id}}" name="id">
+
       <button class="btn btn-success" type="submit">Adicionar</button>
       <br><br>
+      <input type="hidden" value="{{obras._id}}" name="id">
     </form>
   </div>

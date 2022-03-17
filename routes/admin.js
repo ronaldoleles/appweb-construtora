@@ -1,3 +1,5 @@
+const { verify } = require("crypto")
+const { query } = require("express")
 const express = require("express")
 const res = require("express/lib/response")
 const { redirect, get } = require("express/lib/response")
@@ -10,6 +12,13 @@ require('../models/Postagem')
 const Postagem = mongoose.model("postagens")
 require('../models/Obra')
 const Obra = mongoose.model("obras")
+require("../models/Semana")
+const Semana = mongoose.model("semanas")
+require("../models/Totalizador")
+const Totalizador = mongoose.model("totalizadores")
+require("../models/Escalacao")
+const Escalacao = mongoose.model("escalacoes")
+
 
 //rota para renderizar home page
 router.get('/',eAdmin,(req,res)=>{
@@ -130,26 +139,132 @@ router.get("/diaria",eAdmin,(req,res)=>{
   
 })
 
-//rota get para listar funcionarios escalados
 router.get("/diarias/add/:id",eAdmin,(req,res)=>{
-  
- Obra.findOne({_id: req.params.id}).lean().then((obras)=>{
-  Categoria.find({obra: req.params.id}).lean().then((categorias)=>{
-    res.render("admin/adddiaria",{categorias: categorias,obras: obras})
-  }).catch((err)=>{
-    req.flash("error_msg","Houve um erro ao carregar o formulario!")
-    res.redirect("/admin")
-    }) 
-  })
+ 
+  Escalacao.find({obra:req.params.id}).lean().populate("categoria").then((escalacoes)=>{
+      Obra.findOne({_id: req.params.id}).lean().then((obras)=>{
+       Categoria.find({obra: req.params.id}).lean().then((categorias)=>{
+        
+        res.render("admin/adddiaria",{categorias: categorias,obras: obras,escalacoes: escalacoes})
+         }).catch((err)=>{
+            req.flash("error_msg","Houve um erro ao carregar o formulario!")
+             res.redirect("/admin")
+          }) 
+      })
+    })
+  }) 
 
+//rota para adicionar diarias para funcionario
+router.post("/diarias/lancar",eAdmin,(req,res)=>{
+ 
+  Escalacao.find({_id:req.body.idEscalacao}).then((escalacoes)=>{  
+   
+    //verifica a partir do valores dos id da escalaçoes para contar as diarias 
+    
+            //busca no array de escalações a escalação correta para adicionar os dados no banco
+            console.log("Quant escalações: "+ req.body.idEscalacao) 
+            
+ 
+              var cont =0
+              var i=0
+
+             console.log("Quant escalações: "+ req.body.idEscalacao.length)     
+             console.log("D: "+ req.body.diarias)
+
+            for(c=0;c<req.body.idEscalacao.length;c++){
+              cont =0
+              if(req.body.idEscalacao[c]==escalacoes[c]._id){
+                 console.log(req.body.idEscalacao[c]) 
+                
+                 while(req.body.diarias[i] != ";"){
+                  if(req.body.diarias[i]==1){
+                    escalacoes[c].checkSegundaM = "checked"
+                    cont ++
+                  }
+                  if(req.body.diarias[i]==2){
+                    escalacoes[c].checkSegundaT = "checked"
+                    cont ++
+                  }
+                   if(req.body.diarias[i]==3){
+                    escalacoes[c].checkTercaM = "checked"
+                    cont ++
+                  }
+                  if(req.body.diarias[i]==4){
+                    escalacoes[c].checkTercaT = "checked"
+                    cont ++
+                  }
+                   if(req.body.diarias[i]==5){
+                    escalacoes[c].checkQuartaM = "checked"
+                    cont ++
+                  }
+                  if(req.body.diarias[i]==6){
+                    escalacoes[c].checkQuartaT = "checked"
+                    cont ++
+                  }
+                   if(req.body.diarias[i]==7){
+                    escalacoes[c].checkQuintaM = "checked"
+                    cont ++
+                  }
+                   if(req.body.diarias[i]==8){
+                    escalacoes[c].checkQuintaT = "checked"
+                    cont ++
+                  }
+                  if(req.body.diarias[i]==9){
+                    escalacoes[c].checkSextaM = "checked"
+                    cont ++
+                  }
+                   if(req.body.diarias[i]==10){
+                    escalacoes[c].checkSextaT = "checked"
+                    cont ++
+                  }
+                   if(req.body.diarias[i]==11){
+                    escalacoes[c].checkSabadoM = "checked"
+                    cont ++
+                  }
+                  if(req.body.diarias[i]==12){
+                    escalacoes[c].checkSabadoT = "checked"
+                    cont ++
+                  }
+                   if(req.body.diarias[i]==13){
+                    escalacoes[c].checkDomingoM = "checked"
+                    cont ++
+                  }
+                  if(req.body.diarias[i]==14){
+                    escalacoes[c].checkDomingoT = "checked"
+                    cont ++
+                  }
+
+                  i++
+                 }
+                 i++
+                 
+              }
+              cont=cont/2
+               escalacoes[c].total = req.body.salario[c]*cont
+               escalacoes[c].numeroDiarias = cont
+               escalacoes[c].save()
+              }        
+    
+        
+        req.flash("success_msg","Diarias lançadas com sucesso!")
+        res.redirect("/admin/diaria")
+    
+    
+  }).catch((err)=>{
+    req.flash("error_msg","Houve um erro ao lancar as diarias")
+    res.redirect("/admin/diaria")
+    })
+  
 })
+
+
 
 //rota get para escalar funcionarios para obra
 router.get("/postagens/escalar/:id",eAdmin,(req,res)=>{
-  
+Escalacao.find({obra:req.params.id}).lean().populate("categoria").then((escalacoes)=>{
   Obra.findOne({_id:req.params.id}).lean().then((obras)=>{
       Categoria.find().lean().then((categorias)=>{
-            res.render("admin/escalarfuncionario",{categorias: categorias, obras: obras})
+            res.render("admin/escalarfuncionario",{categorias: categorias, obras: obras, escalacoes: escalacoes})
       }).catch((err)=>{
         req.flash("error_msg","erro ao listar funcionarios")
         res.redirect("/admin/postagens")
@@ -158,22 +273,25 @@ router.get("/postagens/escalar/:id",eAdmin,(req,res)=>{
   }).catch((err)=>{
     req.flash("error_msg","Houve um erro ao listar funcionario")
     res.redirect("/admin/postagens")
+    })
   })
 })
 
-//rota post para salvar id funcionario escalado em obra
 router.post("/postagens/escalar/funcionario",eAdmin,(req,res)=>{
+  const novaEscalacao = {
+      categoria: req.body.categoria,
+      obra: req.body.id,
+      escalado: true
 
-    Categoria.findOne({_id: req.body.categoria}).then((categorias)=>{
-              console.log("ID Obras"+req.body.id)
-              
-              categorias.obra = req.body.id    
-              categorias.escalado = true
-              categorias.save().then(()=>{
-              req.flash("success_msg","Funcionario escalado com sucesso")
-              res.redirect("/admin/postagens")
-               })   
-       })
+  }
+    new Escalacao(novaEscalacao).save().then(()=>{
+      req.flash("success_msg","funcionario escalado com sucesso!")
+      res.redirect("/admin/postagens")
+     
+   }).catch((err)=>{
+      req.flash("error_msg", "Erro ao escalar funcionario!! Tente novamente")
+      res.redirect("/")
+    })
 })
 
 //rota post pra add de obras 
