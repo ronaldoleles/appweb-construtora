@@ -2,7 +2,7 @@
   <div class="card-body">
     <form action="/admin/diarias/lancar" method="POST">
       <h4 class="text-center">{{obras.nomeObra}}</h4>
-
+      <input type="hidden" value="{{obras._id}}" name="idObra">
       <small></small>
       <div class="table-responsive">
         <table class="table table-striped table-hover">
@@ -23,7 +23,8 @@
           <tbody>
             {{#each escalacoes}}
             <tr>
-              <th scope="row">{{categoria.nome}}: <small><br>{{categoria.funcao}} R$ {{categoria.salario}}</small></th>
+              <th scope="row">{{categoria.nome}}: <small><br>{{categoria.funcao}} R$ {{categoria.salario}}</small>
+              </th>
 
               <input type="hidden" value="{{categoria.nome}}" name="nome">
               <input type="hidden" value="{{_id}}" name="idEscalacao">
@@ -126,12 +127,12 @@
           </tbody>
           <tfoot>
             <tr>
-              <th scope="row">Total Geral</th>
+              <th scope="row">Total Geral:</th>
               <td>
-                {{#each semanas}}
-                R$ {{total}}
-                {{else}}
-                {{/each}}
+
+
+                R${{semanas.total}}
+
 
               </td>
             </tr>
@@ -140,7 +141,10 @@
 
       </div>
       <button type="submit" class="btn btn-success">Lançar diarias</button>
-      <a href=""><button class="btn btn-danger">Limpar Diarias</button></a>
     </form>
+
+    <a href=""><button type="submit" class="btn btn-danger mt-4 ">Limpar diarias</button></a>
+    <a href="/admin/preencher"><button type="submit" class="btn btn-success mt-4">Preencher seg-sex</button></a>
+    <a href="/admin/postagens"><button class="btn btn-dark mt-4">Alterar Escalações</button></a>
   </div>
 </div>

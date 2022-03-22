@@ -1,0 +1,29 @@
+<h4>Obra Selecionada: {{obras.nomeObra}}</h4>
+<input type="hidden" value="{{obras.nomeObra}}" name="nomeObraEscalada">
+<div class="card">
+  <div class="card-body">
+    <form action="/admin/postagens/deletar/escalacao" method="POST">
+      <h6>Lista de Funcionários Escalados:</h6>
+      {{#each escalacoes}}
+      {{categoria.nome}}
+      <br>
+      {{else}}
+      {{/each}}
+
+      <br>
+      <h6>Remover Escalação de Funcionário: </h6>
+
+      <select name="escalacao" class="custom-select">
+        {{#each escalacoes}}
+        <option value="{{_id}}">{{categoria.nome}}</option>
+
+        {{else}}
+        <option value="0">Nenhum funcionario Escalado</option>
+        {{/each}}
+      </select>
+
+      <button class="btn btn-danger" type="submit">Remover</button>
+      <br><br>
+      <input type="hidden" value="{{obras._id}}" name="id">
+    </form>
+  </div>

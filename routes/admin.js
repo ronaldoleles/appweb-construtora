@@ -140,12 +140,13 @@ router.get("/diaria",eAdmin,(req,res)=>{
 })
 
 router.get("/diarias/add/:id",eAdmin,(req,res)=>{
- 
+ Semana.findOne({obra: req.params.id}).lean().then((semanas)=>{ 
   Escalacao.find({obra:req.params.id}).lean().populate("categoria").then((escalacoes)=>{
       Obra.findOne({_id: req.params.id}).lean().then((obras)=>{
-       Categoria.find({obra: req.params.id}).lean().then((categorias)=>{
+        Categoria.find({obra: req.params.id}).lean().then((categorias)=>{
+          
         
-        res.render("admin/adddiaria",{categorias: categorias,obras: obras,escalacoes: escalacoes})
+        res.render("admin/adddiaria",{categorias: categorias,obras: obras,escalacoes: escalacoes, semanas: semanas})
          }).catch((err)=>{
             req.flash("error_msg","Houve um erro ao carregar o formulario!")
              res.redirect("/admin")
@@ -153,11 +154,14 @@ router.get("/diarias/add/:id",eAdmin,(req,res)=>{
       })
     })
   }) 
+})
 
 //rota para adicionar diarias para funcionario
 router.post("/diarias/lancar",eAdmin,(req,res)=>{
- 
+ Semana.findOne({obra: req.body.idObra}).then((semanas)=>{
   Escalacao.find({_id:req.body.idEscalacao}).then((escalacoes)=>{  
+   
+
    
     //verifica a partir do valores dos id da escalaçoes para contar as diarias 
     
@@ -167,7 +171,7 @@ router.post("/diarias/lancar",eAdmin,(req,res)=>{
  
               var cont =0
               var i=0
-
+              var totaliz =0
              console.log("Quant escalações: "+ req.body.idEscalacao.length)     
              console.log("D: "+ req.body.diarias)
 
@@ -239,24 +243,54 @@ router.post("/diarias/lancar",eAdmin,(req,res)=>{
                  i++
                  
               }
+              
               cont=cont/2
                escalacoes[c].total = req.body.salario[c]*cont
                escalacoes[c].numeroDiarias = cont
                escalacoes[c].save()
-              }        
-    
+               totaliz = totaliz + escalacoes[c].total
+                      
+              }
+        
+              semanas.total = totaliz
+              semanas.save()
         
         req.flash("success_msg","Diarias lançadas com sucesso!")
         res.redirect("/admin/diaria")
     
     
   }).catch((err)=>{
-    req.flash("error_msg","Houve um erro ao lancar as diarias")
+    req.flash("error_msg","Houve um erro ao lancar as diarias, Pelo menos 2 funcionarios devem estar escalados!!")
     res.redirect("/admin/diaria")
     })
-  
+  }).catch((err)=>{
+    req.flash("error_msg","Houve um erro ao lancar as diarias, Pelo menos 2 funcionarios devem estar escalados!!")
+    res.redirect("/admin/diaria")
+    })
 })
 
+
+//rota get para listar escalações
+router.get("/postagens/remover/:id",(req,res)=>{
+  Escalacao.find({obra:req.params.id}).lean().populate("categoria").then((escalacoes)=>{
+    Obra.findOne({_id:req.params.id}).lean().then((obras)=>{
+    res.render("admin/deletarescalcao",{escalacoes: escalacoes,obras:obras})
+  }).catch((err)=>{
+    req.flash("error_msg","Houve um erro ao listar funcionarios")
+    res.redirect("/admin/postagens")
+    })
+  })
+})
+//rota para remover escalção de funcionario
+router.post("/postagens/deletar/escalacao/",(req,res)=>{
+  Escalacao.remove({_id:req.body.escalacao}).then(()=>{
+    req.flash("success_msg","Escalacao deletada com sucesso!")
+    res.redirect("/admin/postagens")
+  }).catch((err)=>{
+    req.flash("error_msg","Houve um erro ao deletar escalação")
+    res.redirect("/admin/postagens")
+    })
+})
 
 
 //rota get para escalar funcionarios para obra
@@ -278,6 +312,11 @@ Escalacao.find({obra:req.params.id}).lean().populate("categoria").then((escalaco
 })
 
 router.post("/postagens/escalar/funcionario",eAdmin,(req,res)=>{
+ console.log("ID Obra:"+req.body.id) 
+  const novaSemana = {
+                obra: req.body.id,  
+              }
+              new Semana(novaSemana).save()
   const novaEscalacao = {
       categoria: req.body.categoria,
       obra: req.body.id,

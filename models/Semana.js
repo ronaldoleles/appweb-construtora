@@ -6,14 +6,9 @@ const Semana = new Schema({
    
     obra:{
       type: Schema.Types.ObjectId,
-      ref: "escalacoes" 
+      ref: "obras" 
       
     }, 
-    categoria:{
-      type: Schema.Types.ObjectId,
-      ref: "categorias" 
-      
-    },
     total:{
       type: Number,
       default: 0
