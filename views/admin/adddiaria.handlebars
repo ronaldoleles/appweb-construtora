@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-body">
-    <form action="/admin/diarias/lancar" method="POST">
+    <form action="/admin/diarias/lancar" id="form-lancar-diarias" method="POST">
       <h4 class="text-center">{{obras.nomeObra}}</h4>
       <input type="hidden" value="{{obras._id}}" name="idObra">
       <small></small>
@@ -27,29 +27,30 @@
               </th>
 
               <input type="hidden" value="{{categoria.nome}}" name="nome">
-              <input type="hidden" value="{{_id}}" name="idEscalacao">
+              <input type="hidden" value="{{_id}}" name="idEscalacao-{{ categoria._id }}">
+              <input type="hidden" value="{{categoria.salario}}" name="salario-{{ categoria._id }}">
               <input type="hidden" value="{{categoria._id}}" name="idCategoria">
 
               <td>
                 <div class="form-check">
                   <label for="{{_id}}">Manhã</label>
-                  <input type="checkbox" name="diarias" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="1" {{checkSegundaM}}>
+                  <input type="checkbox" name="diarias-{{categoria._id}}" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="checkSegundaM" {{checkSegundaM}}>
                 </div>
 
                 <div class="form-check">
                   <label for="{{_id}}">Tarde</label>
-                  <input type="checkbox" name="diarias" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="2" {{checkSegundaT}}>
+                  <input type="checkbox" name="diarias-{{categoria._id}}" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="checkSegundaT" {{checkSegundaT}}>
                 </div>
               </td>
               <td>
                 <div class="form-check">
                   <label for="{{_id}}">Manhã</label>
-                  <input type="checkbox" name="diarias" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="3" {{checkTercaM}}>
+                  <input type="checkbox" name="diarias-{{categoria._id}}" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="checkTercaM" {{checkTercaM}}>
 
                 </div>
                 <div class="form-check">
                   <label for="{{_id}}">Tarde</label>
-                  <input type="checkbox" name="diarias" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="4" {{checkTercaT}}>
+                  <input type="checkbox" name="diarias-{{categoria._id}}" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="checkTercaT" {{checkTercaT}}>
 
                 </div>
               </td>
@@ -58,67 +59,66 @@
               <td>
                 <div class="form-check">
                   <label for="{{_id}}">Manhã</label>
-                  <input type="checkbox" name="diarias" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="5" {{checkQuartaM}}>
+                  <input type="checkbox" name="diarias-{{categoria._id}}" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="checkQuartaM" {{checkQuartaM}}>
 
                 </div>
                 <div class="form-check">
                   <label for="{{_id}}">Tarde</label>
-                  <input type="checkbox" name="diarias" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="6" {{checkQuartaT}}>
-
-                </div>
-              </td>
-              <td>
-                <div class="form-check">
-                  <label for="{{_id}}">Manhã</label>
-                  <input type="checkbox" name="diarias" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="7" {{checkQuintaM}}>
-
-                </div>
-                <div class="form-check">
-                  <label for="{{_id}}">Tarde</label>
-                  <input type="checkbox" name="diarias" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="8" {{checkQuintaT}}>
+                  <input type="checkbox" name="diarias-{{categoria._id}}" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="checkQuartaT" {{checkQuartaT}}>
 
                 </div>
               </td>
               <td>
                 <div class="form-check">
                   <label for="{{_id}}">Manhã</label>
-                  <input type="checkbox" name="diarias" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="9" {{checkSextaM}}>
+                  <input type="checkbox" name="diarias-{{categoria._id}}" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="checkQuintaM" {{checkQuintaM}}>
 
                 </div>
                 <div class="form-check">
                   <label for="{{_id}}">Tarde</label>
-                  <input type="checkbox" name="diarias" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="10" {{checkSextaT}}>
+                  <input type="checkbox" name="diarias-{{categoria._id}}" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="checkQuintaT" {{checkQuintaT}}>
 
                 </div>
               </td>
               <td>
                 <div class="form-check">
                   <label for="{{_id}}">Manhã</label>
-                  <input type="checkbox" name="diarias" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="11" {{checkSabadoM}}>
+                  <input type="checkbox" name="diarias-{{categoria._id}}" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="checkSextaM" {{checkSextaM}}>
 
                 </div>
                 <div class="form-check">
                   <label for="{{_id}}">Tarde</label>
-                  <input type="checkbox" name="diarias" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="12" {{checkSabadoT}}>
+                  <input type="checkbox" name="diarias-{{categoria._id}}" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="checkSextaT" {{checkSextaT}}>
 
                 </div>
               </td>
               <td>
                 <div class="form-check">
                   <label for="{{_id}}">Manhã</label>
-                  <input type="checkbox" name="diarias" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="13" {{checkDomingoM}}>
+                  <input type="checkbox" name="diarias-{{categoria._id}}" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="checkSabadoM" {{checkSabadoM}}>
 
                 </div>
                 <div class="form-check">
                   <label for="{{_id}}">Tarde</label>
-                  <input type="checkbox" name="diarias" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="14" {{checkDomingoT}}>
+                  <input type="checkbox" name="diarias-{{categoria._id}}" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="checkSabadoT" {{checkSabadoT}}>
+
+                </div>
+              </td>
+              <td>
+                <div class="form-check">
+                  <label for="{{_id}}">Manhã</label>
+                  <input type="checkbox" name="diarias-{{categoria._id}}" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="checkDomingoM" {{checkDomingoM}}>
+
+                </div>
+                <div class="form-check">
+                  <label for="{{_id}}">Tarde</label>
+                  <input type="checkbox" name="diarias-{{categoria._id}}" id="{{_id}}" salario="{{ categoria.salario }}" categoria-id="{{ categoria._id }}" class="form-check-input" value="checkDomingoT" {{checkDomingoT}}>
 
                 </div>
               </td>
 
 
               <td>
-                <input type="hidden" for="{{_id}}" value=";" name="diarias">
                 <input type="hidden" value="{{categoria.salario}}" name="salario">
                 R$ <span id="total-{{categoria._id}}">{{total}}</span>
               </td>
@@ -189,4 +189,64 @@
 
         }, false);
     })
+
+    document.getElementById('form-lancar-diarias').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        let data = []
+        funcionarios.map(funcionario => {
+            let checkboxs = document.querySelectorAll(`[name="diarias-${funcionario}"]`)
+            let idEscalacao = document.querySelector(`[name="idEscalacao-${funcionario}"]`).value;
+            let salario = document.querySelector(`[name="salario-${funcionario}"]`).value;
+            let idObra = document.querySelector('[name="idObra"]').value;
+
+            console.log(idEscalacao)
+
+            let diariasObj = {}
+            let diarias = {}
+            let qtdDiarias = 0
+            Array.from(checkboxs).map(checkbox => {
+                const name = checkbox.getAttribute("name");
+
+                if (checkbox.checked){
+                    diarias[`${checkbox.value}`] = 'checked'
+                    qtdDiarias += 0.5
+                } else {
+                    diarias[`${checkbox.value}`] = 'unchecked'
+                }
+            })
+            diariasObj['diarias'] = diarias
+            diariasObj['funcionario'] = funcionario
+            diariasObj['idEscalacao'] = idEscalacao
+            diariasObj['idObra'] = idObra
+            diariasObj['qtdDiarias'] = qtdDiarias
+            diariasObj['salario'] = parseFloat(salario)
+            data.push(diariasObj);
+        })
+        
+        // Fazendo a requisição pro server
+
+        let headers = new Headers();
+        headers.append('Content-Type', 'Application/json');
+
+        const req = new Request('/admin/diarias/lancar', {
+            method: 'POST', 
+            body: JSON.stringify(data),
+            headers: headers
+        });
+
+        fetch(req)
+            .then(response => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Ops! Houve um erro em nosso servidor.');
+                }
+            })
+            .then(response => {
+                window.location.href = response.redirect
+            }).catch(error => {
+                console.error(error);
+            });
+    });
 </script>
