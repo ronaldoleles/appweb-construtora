@@ -26,46 +26,60 @@ const Escalacao = new Schema({
     default: false
   },
   checkSegundaM:{
-    type: String
+    type: String,
+    default: "unchecked"
   },
    checkSegundaT:{
-    type: String
+    type: String,
+    default: "unchecked"
   },
   checkTercaM:{
-    type: String
+    type: String,
+    default: "unchecked"
   },
   checkTercaT:{
-    type: String
+    type: String,
+    default: "unchecked"
   },
   checkQuartaM:{
-    type: String
+    type: String,
+    default: "unchecked"
   },
   checkQuartaT:{
-    type: String
+    type: String,
+    default: "unchecked"
   },
   checkQuintaM:{
-    type: String
+    type: String,
+    default: "unchecked"
   },
   checkQuintaT:{
-    type: String
+    type: String,
+    default: "unchecked"
   },
   checkSextaM:{
-    type: String
+    type: String,
+    default: "unchecked"
   },
   checkSextaT:{
-    type: String
+    type: String,
+    default: "unchecked"
   },
   checkSabadoM:{
-    type: String
+    type: String,
+    default: "unchecked"
   },
   checkSabadoT:{
-    type: String
+    type: String,
+    default: "unchecked"
   },
   checkDomingoM:{
-    type: String
+    type: String,
+    default: "unchecked"
   },
   checkDomingoT:{
-    type: String
+    type: String,
+    default: "unchecked"
   },
   verifica:{
     type: Number,
