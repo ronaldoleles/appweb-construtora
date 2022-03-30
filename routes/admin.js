@@ -228,6 +228,27 @@ async function resetarDiarias(escalacaoId) {
   console.log(resp);
 }
 
+//rota para limpar todas diarias da obra
+router.post("/diarias/limpar",eAdmin,async (req, res) => {
+    var totalSemana = 0;
+    semana = await Semana.findOne({ obra: req.body[0].idObra })
+
+    for (const diaria of req.body) {
+        escalacao = await Escalacao.findOne({ _id: diaria.idEscalacao })
+        await Escalacao.updateOne({_id: escalacao._id}, {$set: diaria.diarias}, {new: true, upsert: true})
+        
+        escalacao.numeroDiarias = diaria.qtdDiarias;
+        escalacao.total = (diaria.qtdDiarias * diaria.salario)
+        await escalacao.save()
+        
+        totalSemana += escalacao.total
+    }
+    semana.total = totalSemana;
+    await semana.save()
+
+    return res.send({'redirect': '/admin/diaria'})
+});
+
 //rota para adicionar diarias para funcionario
 router.post("/diarias/lancar", eAdmin, async (req, res) => {
     var totalSemana = 0;

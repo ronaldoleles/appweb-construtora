@@ -140,113 +140,133 @@
         </table>
 
       </div>
-      <button type="submit" class="btn btn-success">Lançar diarias</button>
+      <button type="submit" class="btn btn-success ">Lançar diarias</button>
+      <a id="form-diarias-limpar" class="btn btn-danger">Limpar Diarias</a>
+      <a id="form-diarias-seg-sext" class="btn btn-success">Preencher seg-sex</a>
+      <a class="btn btn-dark" href="/admin/postagens">Alterar Escalações</a>
     </form>
 
-    <a href=""><button type="submit" class="btn btn-danger mt-4 ">Limpar diarias</button></a>
-    <a href="/admin/preencher"><button type="submit" class="btn btn-success mt-4">Preencher seg-sex</button></a>
-    <a href="/admin/postagens"><button class="btn btn-dark mt-4">Alterar Escalações</button></a>
+
   </div>
 </div>
 
 <script>
-    let ElValorTotal = document.querySelector('#total-geral');
+  let ElValorTotal = document.querySelector('#total-geral');
 
+  function atualizarDiarias(categoriaId, valor, operacao) {
+    let el = document.querySelector(`#total-${categoriaId}`);
+    let valorAtual = parseFloat(el.textContent);
+    let valorTotal = parseFloat(ElValorTotal.textContent);
 
-    function atualizarDiarias(categoriaId, valor, operacao){
-        let el = document.querySelector(`#total-${categoriaId}`);
-        let valorAtual = parseFloat(el.textContent);
-        let valorTotal = parseFloat(ElValorTotal.textContent);
-
-        if (operacao == "adicionar"){
-            el.textContent = String(valorAtual + valor)
-            ElValorTotal.textContent = String(valorTotal + valor)
-        } else {
-            el.textContent = String(valorAtual - valor)
-            ElValorTotal.textContent = String(valorTotal - valor)
-        }
+    if (operacao == "adicionar") {
+      el.textContent = String(valorAtual + valor)
+      ElValorTotal.textContent = String(valorTotal + valor)
+    } else {
+      el.textContent = String(valorAtual - valor)
+      ElValorTotal.textContent = String(valorTotal - valor)
     }
+  }
 
-    const inputs = document.getElementsByName("idCategoria");
-    let funcionarios = []
-    
-    Array.from(inputs).map(input => {
-        funcionarios.push(input.value);
+  const inputs = document.getElementsByName("idCategoria");
+  let funcionarios = []
+
+  Array.from(inputs).map(input => {
+    funcionarios.push(input.value);
+  })
+
+  let checkbox = document.querySelectorAll('.form-check-input')
+
+  Array.from(checkbox).map(checkbox => {
+    checkbox.addEventListener('click', function () {
+      const categoriaId = this.getAttribute("categoria-id");
+      const meiaDiaria = (parseFloat(this.getAttribute("salario")) / 2)
+
+      if (this.checked) {
+        atualizarDiarias(categoriaId, meiaDiaria, "adicionar");
+      } else {
+        atualizarDiarias(categoriaId, meiaDiaria, "remover");
+      }
+
+    }, false);
+  })
+  //seta todos checkbox para false
+  document.getElementById('form-diarias-limpar').addEventListener('click', (l) => {
+    l.preventDefault();
+    Array.from(checkbox).map(checkbox => {
+      checkbox.checked = false;
+    })
+  })
+  //seta todos checkbox de segunda a sexta para true
+  document.getElementById('form-diarias-seg-sext').addEventListener('click', (l) => {
+    l.preventDefault();
+    Array.from(checkbox).map(checkbox => {
+
+      if ((checkbox.value == "checkSabadoM") || (checkbox.value == "checkSabadoT") ||
+        (checkbox.value == "checkDomingoM") || (checkbox.value == "checkDomingoT")) {
+        checkbox.checked = false;
+      } else {
+        checkbox.checked = true;
+      }
+    })
+  })
+
+  document.getElementById('form-lancar-diarias').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    let data = []
+    funcionarios.map(funcionario => {
+      let checkboxs = document.querySelectorAll(`[name="diarias-${funcionario}"]`)
+      let idEscalacao = document.querySelector(`[name="idEscalacao-${funcionario}"]`).value;
+      let salario = document.querySelector(`[name="salario-${funcionario}"]`).value;
+      let idObra = document.querySelector('[name="idObra"]').value;
+
+      console.log(idEscalacao)
+
+      let diariasObj = {}
+      let diarias = {}
+      let qtdDiarias = 0
+      Array.from(checkboxs).map(checkbox => {
+        const name = checkbox.getAttribute("name");
+
+        if (checkbox.checked) {
+          diarias[`${checkbox.value}`] = 'checked'
+          qtdDiarias += 0.5
+        } else {
+          diarias[`${checkbox.value}`] = 'unchecked'
+        }
+      })
+      diariasObj['diarias'] = diarias
+      diariasObj['funcionario'] = funcionario
+      diariasObj['idEscalacao'] = idEscalacao
+      diariasObj['idObra'] = idObra
+      diariasObj['qtdDiarias'] = qtdDiarias
+      diariasObj['salario'] = parseFloat(salario)
+      data.push(diariasObj);
     })
 
-    let checkbocks = document.querySelectorAll('.form-check-input')
+    // Fazendo a requisição pro server
 
-    Array.from(checkbocks).map(checkbox => {
-        checkbox.addEventListener('click', function () {
-            const categoriaId = this.getAttribute("categoria-id");
-            const meiaDiaria = (parseFloat(this.getAttribute("salario")) / 2)
+    let headers = new Headers();
+    headers.append('Content-Type', 'Application/json');
 
-            if (this.checked){
-                atualizarDiarias(categoriaId, meiaDiaria, "adicionar");
-            } else {
-                atualizarDiarias(categoriaId, meiaDiaria, "remover");
-            }
-
-        }, false);
-    })
-
-    document.getElementById('form-lancar-diarias').addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        let data = []
-        funcionarios.map(funcionario => {
-            let checkboxs = document.querySelectorAll(`[name="diarias-${funcionario}"]`)
-            let idEscalacao = document.querySelector(`[name="idEscalacao-${funcionario}"]`).value;
-            let salario = document.querySelector(`[name="salario-${funcionario}"]`).value;
-            let idObra = document.querySelector('[name="idObra"]').value;
-
-            console.log(idEscalacao)
-
-            let diariasObj = {}
-            let diarias = {}
-            let qtdDiarias = 0
-            Array.from(checkboxs).map(checkbox => {
-                const name = checkbox.getAttribute("name");
-
-                if (checkbox.checked){
-                    diarias[`${checkbox.value}`] = 'checked'
-                    qtdDiarias += 0.5
-                } else {
-                    diarias[`${checkbox.value}`] = 'unchecked'
-                }
-            })
-            diariasObj['diarias'] = diarias
-            diariasObj['funcionario'] = funcionario
-            diariasObj['idEscalacao'] = idEscalacao
-            diariasObj['idObra'] = idObra
-            diariasObj['qtdDiarias'] = qtdDiarias
-            diariasObj['salario'] = parseFloat(salario)
-            data.push(diariasObj);
-        })
-        
-        // Fazendo a requisição pro server
-
-        let headers = new Headers();
-        headers.append('Content-Type', 'Application/json');
-
-        const req = new Request('/admin/diarias/lancar', {
-            method: 'POST', 
-            body: JSON.stringify(data),
-            headers: headers
-        });
-
-        fetch(req)
-            .then(response => {
-                if (response.status === 200) {
-                    return response.json();
-                } else {
-                    throw new Error('Ops! Houve um erro em nosso servidor.');
-                }
-            })
-            .then(response => {
-                window.location.href = response.redirect
-            }).catch(error => {
-                console.error(error);
-            });
+    const req = new Request('/admin/diarias/lancar', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: headers
     });
+
+    fetch(req)
+      .then(response => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          throw new Error('Ops! Houve um erro em nosso servidor.');
+        }
+      })
+      .then(response => {
+        window.location.href = response.redirect
+      }).catch(error => {
+        console.error(error);
+      });
+  });
 </script>
