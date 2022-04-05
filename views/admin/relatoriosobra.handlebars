@@ -1,0 +1,15 @@
+<h2>Relatórios</h2>
+<h3 class="text-center">{{obras.nomeObra}}</h3>
+<div class="card mt-4">
+  <div class="card-body">
+    <small>Proprietário: {{obras.nomeProprietario}}</small>
+    <br>
+    <small>Data de início: {{obras.data}}</small>
+    <br>
+    {{#each semanas}}
+    <small>Total semana tal: {{total}}</small>
+    <br>
+    {{else}}
+    {{/each}}
+  </div>
+</div>

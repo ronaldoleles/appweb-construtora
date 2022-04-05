@@ -203,6 +203,33 @@ router.get("/diarias/add/:id", eAdmin, (req, res) => {
     });
 });
 
+//rota para reenderizar obras para relatorios da obra
+router.get("/relatorios",eAdmin,(req, res) => {
+    Obra.find()
+    .sort({ data: "desc" })
+    .then((obras) => {
+      res.render("admin/relatorios", {
+        obras: obras.map((obras) => obras.toJSON()),
+      });
+    })
+    .catch((err) => {
+      console.log("Erro listar categorias! : " + err);
+    });
+})
+//rota para renderizar relatorios de obra em especifico
+router.get("/relatorios/obra/:id",eAdmin,(req, res) => {
+    Semana.find().lean().then((semanas) => {
+      Obra.findOne({_id: req.params.id}).lean().then((obras) => {
+      res.render("admin/relatoriosobra", {
+        semanas:semanas,obras:obras});
+    }).catch((err) => {
+      console.log("Erro, não existe nemhum relátorio!" + err);
+    });
+  }).catch((err) => {
+    console.log("Erro, não existe nemhum relátorio!" + err);
+  });
+})
+
 async function resetarDiarias(escalacaoId) {
   resp = await Escalacao.collection.updateOne(
     { _id: escalacaoId },
@@ -227,27 +254,6 @@ async function resetarDiarias(escalacaoId) {
   );
   console.log(resp);
 }
-
-//rota para limpar todas diarias da obra
-router.post("/diarias/limpar",eAdmin,async (req, res) => {
-    var totalSemana = 0;
-    semana = await Semana.findOne({ obra: req.body[0].idObra })
-
-    for (const diaria of req.body) {
-        escalacao = await Escalacao.findOne({ _id: diaria.idEscalacao })
-        await Escalacao.updateOne({_id: escalacao._id}, {$set: diaria.diarias}, {new: true, upsert: true})
-        
-        escalacao.numeroDiarias = diaria.qtdDiarias;
-        escalacao.total = (diaria.qtdDiarias * diaria.salario)
-        await escalacao.save()
-        
-        totalSemana += escalacao.total
-    }
-    semana.total = totalSemana;
-    await semana.save()
-
-    return res.send({'redirect': '/admin/diaria'})
-});
 
 //rota para adicionar diarias para funcionario
 router.post("/diarias/lancar", eAdmin, async (req, res) => {
@@ -332,6 +338,18 @@ router.get("/postagens/escalar/:id", eAdmin, (req, res) => {
         });
     });
 });
+
+function novasemana(){
+  var data = new Date();
+  var inicioSemana = data.getDay();
+  var diaMes = data.getDate();
+
+  if(inicioSemana == 1){
+    
+    console.log("inicio segunda["+diaMes+"] final domingo["+(diaMes+5)+"]")
+  }
+}
+novasemana();
 
 router.post("/postagens/escalar/funcionario", eAdmin, (req, res) => {
   console.log("ID Obra:" + req.body.id);
