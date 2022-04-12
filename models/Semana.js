@@ -6,9 +6,7 @@ const Semana = new Schema({
    
     obra:{
       type: Schema.Types.ObjectId,
-      ref: "obras",
-       
-      
+      ref: "obras", 
     }, 
     total:{
       type: Number,

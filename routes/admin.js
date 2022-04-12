@@ -342,41 +342,33 @@ router.get("/postagens/escalar/:id", eAdmin, (req, res) => {
     });
 });
 
-
 function novasemana(id){
   var data = new Date();
   var inicioSemana = data.getDay();
   var diaMes = data.getDate();
-
   console.log("S id obra:"+id)
   console.log("inicio segunda["+diaMes+"] final domingo["+(diaMes+5)+"]")
-  Semana.findOne({obra: id}).lean().then((semanas)=>{
-    console.log(semanas.obra)
-    console.log(semanas.iniciada)
-    if(inicioSemana == 4){
 
-      if(semanas.iniciada == 1){
-
-      }
-      if(semanas.iniciada == 0)
-      {
+  Semana.findOne({obra:id}).lean().then((semanas)=>{  
+    if(inicioSemana == 1){
+      if(semanas.iniciada != 1){
           const novaSemana = {
-          obra: req.body.id,
+          obra: id,
           iniciada: 1,
-        };
-          new Semana(novaSemana).save();
-      }
+          }
+        new Semana(novaSemana).save();
+      }   
     }
-  })
+  }) 
 }
 
 
-
-
 router.post("/postagens/escalar/funcionario", eAdmin, (req, res) => {
-  console.log("ID Obra:" + req.body.id);
-  
-  novasemana(req.body.id);
+ // console.log("ID Obra:" + req.body.id);
+
+  //funcao para criar novas semanas
+   novasemana(req.body.id);
+
   const novaEscalacao = {
     categoria: req.body.categoria,
     obra: req.body.id,
